@@ -1,0 +1,45 @@
+{
+  "extends": [
+    "airbnb-typescript",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "prettier/react",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"]
+      }
+    }
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "react/jsx-props-no-spreading": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": [
+      "warn",
+      { "allowedNames": ["render", "getInitialProps"] }
+    ],
+    "jsx-a11y/anchor-is-valid": [
+      "error",
+      {
+        "components": ["Link"],
+        "specialLink": ["hrefLeft", "hrefRight"],
+        "aspects": ["invalidHref", "preferButton"]
+      }
+    ]
+  },
+  "overrides": [{ "files": ["*.d.ts"], "rules": { "spaced-comment": "off" } }],
+  "env": { "browser": true }
+}
