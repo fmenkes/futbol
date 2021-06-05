@@ -40,16 +40,35 @@ model Session {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map(name: "email_verified")
+  email         String?      @unique
+  emailVerified DateTime?    @map(name: "email_verified")
   image         String?
-  role          UserRole  @default(BASIC)
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
+  role          UserRole     @default(BASIC)
+  createdAt     DateTime     @default(now()) @map(name: "created_at")
+  updatedAt     DateTime     @default(now()) @map(name: "updated_at")
+  predictions   Prediction[] @relation("user")
 
   @@map(name: "users")
+}
+
+model Prediction {
+  id            Int              @id @default(autoincrement())
+  userId        Int              @map(name: "user_id")
+  user          User             @relation("user", fields: [userId], references: [id])
+  matchId       Int              @map(name: "match_id")
+  match         Match            @relation("match", fields: [matchId], references: [id])
+  homeTeamGoals Int?             @map(name: "home_team_goals")
+  awayTeamGoals Int?             @map(name: "away_team_goals")
+  result        PredictionResult @default(INCOMPLETE)
+}
+
+enum PredictionResult {
+  INCOMPLETE
+  INCORRECT
+  PARTIAL
+  CORRECT
 }
 
 enum UserRole {
@@ -63,21 +82,22 @@ model AdminSettings {
 }
 
 model Match {
-  id            Int         @id
-  utcDate       DateTime    @map(name: "utc_date")
+  id            Int          @id
+  utcDate       DateTime     @map(name: "utc_date")
   status        MatchStatus
   matchday      Int?
   stage         Stage
   group         String?
-  homeTeamId    Int?        @map(name: "home_team_id")
-  homeTeam      Team?       @relation("home_team", fields: [homeTeamId], references: [id])
-  awayTeamId    Int?        @map(name: "away_team_id")
-  awayTeam      Team?       @relation("away_team", fields: [awayTeamId], references: [id])
-  homeTeamGoals Int         @default(0) @map(name: "home_team_goals")
-  awayTeamGoals Int         @default(0) @map(name: "away_team_goals")
-  winnerId      Int?        @map(name: "winner_id")
-  winner        Team?       @relation("winning_team", fields: [winnerId], references: [id])
-  draw          Boolean     @default(false)
+  homeTeamId    Int?         @map(name: "home_team_id")
+  homeTeam      Team?        @relation("home_team", fields: [homeTeamId], references: [id])
+  awayTeamId    Int?         @map(name: "away_team_id")
+  awayTeam      Team?        @relation("away_team", fields: [awayTeamId], references: [id])
+  homeTeamGoals Int          @default(0) @map(name: "home_team_goals")
+  awayTeamGoals Int          @default(0) @map(name: "away_team_goals")
+  winnerId      Int?         @map(name: "winner_id")
+  winner        Team?        @relation("winning_team", fields: [winnerId], references: [id])
+  draw          Boolean      @default(false)
+  predictions   Prediction[] @relation("match")
 }
 
 model Team {
