@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/client';
 import { Box, Flex, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import { useEffect } from 'react';
 
 const Navbar: React.FC = () => {
   const router = useRouter();
@@ -9,6 +10,11 @@ const Navbar: React.FC = () => {
     router.pathname === pathname;
 
   const [session, loading] = useSession();
+
+
+  useEffect(() => {
+    console.log(session);
+  }, [loading]);
 
   return (
     <Box as="nav" bg="gray.200" px="4" mb="4">

@@ -62,6 +62,8 @@ model Prediction {
   homeTeamGoals Int?             @map(name: "home_team_goals")
   awayTeamGoals Int?             @map(name: "away_team_goals")
   result        PredictionResult @default(INCOMPLETE)
+
+  @@unique([userId, matchId], name: "UserMatchKey")
 }
 
 enum PredictionResult {

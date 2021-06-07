@@ -4,10 +4,6 @@ import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import prisma from '@lib/prisma';
 
-import { PrismaClient } from '@prisma/client';
-
-const prismaClient = new PrismaClient();
-
 const options: NextAuthOptions = {
   providers: [
     Providers.Email({
@@ -25,7 +21,7 @@ const options: NextAuthOptions = {
   adapter: Adapters.Prisma.Adapter({ prisma }),
   callbacks: {
     async signIn(user) {
-      const { allowedEmails } = await prismaClient.adminSettings.findFirst();
+      const { allowedEmails } = await prisma.adminSettings.findFirst();
 
       return allowedEmails.includes(user.email);
     },

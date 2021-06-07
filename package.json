@@ -22,7 +22,9 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-flags": "^0.1.18",
-    "superjson": "^1.7.4"
+    "react-hook-form": "^7.8.1",
+    "superjson": "^1.7.4",
+    "swr": "^0.5.6"
   },
   "devDependencies": {
     "@types/next-auth": "^3.13.0",
