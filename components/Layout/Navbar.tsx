@@ -11,11 +11,6 @@ const Navbar: React.FC = () => {
 
   const [session, loading] = useSession();
 
-
-  useEffect(() => {
-    console.log(session);
-  }, [loading]);
-
   return (
     <Box as="nav" bg="gray.200" px="4" mb="4">
       <Flex h="16" alignItems="center" justifyContent="space-between">

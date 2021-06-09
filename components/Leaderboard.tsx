@@ -8,31 +8,21 @@ import {
   Td,
   StatArrow,
 } from '@chakra-ui/react';
+import { UserScores } from 'pages';
 
-const players = [
-  {
-    name: 'Lorem',
-    score: 24,
-    lastWeek: 2,
-  },
-  {
-    name: 'Ipsum',
-    score: 20,
-    lastWeek: 1,
-  },
-  {
-    name: 'Dolor',
-    score: 18,
-    lastWeek: 3,
-  },
-  {
-    name: 'Sit',
-    score: 15,
-    lastWeek: 4
-  }
-];
+type Props = {
+  scores: UserScores[];
+};
 
-const Leaderboard: React.FC = () => {
+const Leaderboard: React.FC<Props> = ({ scores }) => {
+  const sortedScores = scores
+    .map((user) => ({
+      ...user,
+      totalScore:
+        user.scores.length === 0 ? 0 : user.scores.reduce((a, c) => a + c),
+    }))
+    .sort((a, b) => b.totalScore - a.totalScore);
+
   return (
     <Container maxW="container.lg">
       <Table>
@@ -40,24 +30,17 @@ const Leaderboard: React.FC = () => {
           <Th>Rank</Th>
           <Th>Player</Th>
           <Th isNumeric>Score</Th>
-          <Th isNumeric fontSize={['x-small', 'xs']}>
-            Last week
-          </Th>
         </Thead>
         <Tbody>
-          {players.map((player, i) => {
+          {sortedScores.map((user, i) => {
             const rank = i + 1;
-            const trend = rank < player.lastWeek ? 'increase' : 'decrease';
+            // const trend = rank < player.lastWeek ? 'increase' : 'decrease';
 
             return (
               <Tr>
                 <Td>{rank}</Td>
-                <Td>{player.name}</Td>
-                <Td isNumeric>{player.score}</Td>
-                <Td isNumeric>
-                  {rank !== player.lastWeek && <StatArrow type={trend} />}{' '}
-                  {player.lastWeek}
-                </Td>
+                <Td>{user.name}</Td>
+                <Td isNumeric>{user.totalScore}</Td>
               </Tr>
             );
           })}

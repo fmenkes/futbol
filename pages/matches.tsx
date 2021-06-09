@@ -32,9 +32,9 @@ const Matches: NextPage<Props> = ({ matches }) => {
       </Head>
       {/* <Leaderboard /> */}
       {/* TODO: Break out into its own components */}
-      <VStack w={['full', 'container.sm']} mx="auto">
+      <VStack w={['full', 'container.md']} mx="auto">
         {matches.map((match) => (
-          <MatchForm match={match} data={data} />
+          <MatchForm key={match.id} match={match} data={data} />
         ))}
       </VStack>
     </>
@@ -46,6 +46,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     include: {
       homeTeam: true,
       awayTeam: true,
+    },
+    orderBy: {
+      utcDate: 'asc',
     },
   });
 

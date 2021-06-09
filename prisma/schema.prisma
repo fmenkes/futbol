@@ -49,6 +49,7 @@ model User {
   createdAt     DateTime     @default(now()) @map(name: "created_at")
   updatedAt     DateTime     @default(now()) @map(name: "updated_at")
   predictions   Prediction[] @relation("user")
+  scores        Int[]
 
   @@map(name: "users")
 }
