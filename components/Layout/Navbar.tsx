@@ -28,6 +28,21 @@ const Navbar: React.FC = () => {
           <>
             <Box>{session.user.email}</Box>
             <Box>
+              <NextLink href="/" passHref>
+                <Link>Home</Link>
+              </NextLink>
+            </Box>
+            <Box>
+              <NextLink href="/stats" passHref>
+                <Link>Stats</Link>
+              </NextLink>
+            </Box>
+            <Box>
+              <NextLink href="/matches" passHref>
+                <Link>Matches</Link>
+              </NextLink>
+            </Box>
+            <Box>
               <NextLink href="/api/auth/signout" passHref>
                 <Link>Sign out</Link>
               </NextLink>
