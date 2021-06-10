@@ -55,16 +55,23 @@ model User {
 }
 
 model Prediction {
-  id            Int              @id @default(autoincrement())
-  userId        Int              @map(name: "user_id")
-  user          User             @relation("user", fields: [userId], references: [id])
-  matchId       Int              @map(name: "match_id")
-  match         Match            @relation("match", fields: [matchId], references: [id])
-  homeTeamGoals Int?             @map(name: "home_team_goals")
-  awayTeamGoals Int?             @map(name: "away_team_goals")
-  result        PredictionResult @default(INCOMPLETE)
+  id              Int              @id @default(autoincrement())
+  userId          Int              @map(name: "user_id")
+  user            User             @relation("user", fields: [userId], references: [id])
+  matchId         Int              @map(name: "match_id")
+  match           Match            @relation("match", fields: [matchId], references: [id])
+  homeTeamGoals   Int?             @map(name: "home_team_goals")
+  awayTeamGoals   Int?             @map(name: "away_team_goals")
+  projectedResult ProjectedResult  @map(name: "projected_result")
+  result          PredictionResult @default(INCOMPLETE)
 
   @@unique([userId, matchId], name: "UserMatchKey")
+}
+
+enum ProjectedResult {
+  HOME_TEAM
+  DRAW
+  AWAY_TEAM
 }
 
 enum PredictionResult {
