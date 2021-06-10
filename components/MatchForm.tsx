@@ -52,14 +52,22 @@ const MatchForm: React.FC<Props> = ({ match }) => {
   });
 
   const [usersMatchBets, setUsersMatchBets] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const { data } = useSWR('/api/predictions/');
 
-  const onSubmit = handleSubmit((data) => {
-    axios.post('/api/predictions/update', {
+  const onSubmit = handleSubmit(async (data) => {
+    setLoading(true);
+    await axios.post('/api/predictions/update', {
       ...data,
       matchId: match.id,
     });
+    setLoading(false);
+    setSuccess(true);
+    setTimeout(() => {
+      setSuccess(false);
+    }, 2000);
   });
 
   const loadOtherBets = async (id) => {
@@ -174,13 +182,18 @@ const MatchForm: React.FC<Props> = ({ match }) => {
                 {match.homeTeamGoals}
               </Text>
               <Button
-                disabled={disabled()}
+                isLoading={loading}
+                disabled={disabled() || success}
                 mx={4}
                 colorScheme="teal"
                 type="submit"
                 textTransform="initial"
               >
-                {disabled() ? transformMatchStatus(match.status) : 'Save'}
+                {disabled()
+                  ? transformMatchStatus(match.status)
+                  : success
+                  ? 'Saved 👍'
+                  : 'Save'}
               </Button>
               <Text display={disabled() ? 'block' : 'none'}>
                 {match.awayTeamGoals}
