@@ -23,8 +23,6 @@ type Props = {
 };
 
 const Matches: NextPage<Props> = ({ matches }) => {
-  const { data } = useSWR('/api/predictions');
-
   return (
     <>
       <Head>
@@ -34,7 +32,7 @@ const Matches: NextPage<Props> = ({ matches }) => {
       {/* TODO: Break out into its own components */}
       <VStack w={['full', 'container.md']} mx="auto">
         {matches.map((match) => (
-          <MatchForm key={match.id} match={match} data={data} />
+          <MatchForm key={match.id} match={match} />
         ))}
       </VStack>
     </>

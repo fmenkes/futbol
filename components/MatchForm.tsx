@@ -18,6 +18,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { transformMatchStatus } from 'utils';
+import useSWR from 'swr';
 
 const matchWithTeams = Prisma.validator<Prisma.MatchArgs>()({
   include: { homeTeam: true, awayTeam: true },
@@ -27,11 +28,6 @@ type MatchWithTeams = Prisma.MatchGetPayload<typeof matchWithTeams>;
 
 type Props = {
   match: MatchWithTeams;
-  data: {
-    matchId: number;
-    homeTeamGoals: number;
-    awayTeamGoals: number;
-  }[];
 };
 
 type FormData = {
@@ -39,7 +35,7 @@ type FormData = {
   awayTeam: string;
 };
 
-const MatchForm: React.FC<Props> = ({ match, data }) => {
+const MatchForm: React.FC<Props> = ({ match }) => {
   const {
     register,
     handleSubmit,
@@ -51,6 +47,8 @@ const MatchForm: React.FC<Props> = ({ match, data }) => {
       awayTeam: '',
     },
   });
+
+  const { data } = useSWR('/api/predictions');
 
   const onSubmit = handleSubmit((data) => {
     axios.post('/api/predictions/update', {

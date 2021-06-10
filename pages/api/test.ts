@@ -1,18 +1,22 @@
 import { getSession } from 'next-auth/client';
 import { PrismaClient } from '@prisma/client';
+import prisma from '@lib/prisma';
 
 const prismaClient = new PrismaClient();
 
 export default async (req, res) => {
-  const session = await getSession({ req });
-
-  const { role } = await prismaClient.user.findUnique({
+  const scores = await prisma.prediction.findMany({
     where: {
-      email: session.user.email,
+      matchId: 285419
     },
+    include: {
+      user: {
+        select: {
+          name: true,
+        }
+      }
+    }
   });
 
-  console.log(role);
-
-  res.send();
+  res.send(scores);
 };
