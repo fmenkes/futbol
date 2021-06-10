@@ -29,11 +29,7 @@ const Leaderboard: React.FC<Props> = ({ scores }) => {
         <Thead>
           <Tr>
             <Th>Rank</Th>
-          </Tr>
-          <Tr>
             <Th>Player</Th>
-          </Tr>
-          <Tr>
             <Th isNumeric>Score</Th>
           </Tr>
         </Thead>

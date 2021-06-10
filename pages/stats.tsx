@@ -4,6 +4,7 @@ import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { Prisma } from '@prisma/client';
 import prisma from '@lib/prisma';
+import Leaderboard from '@components/Leaderboard';
 
 const StatChart = dynamic(() => import('../components/StatChart'))
 
@@ -24,6 +25,7 @@ const Stats: NextPage<Props> = ({ scores }) => {
             <Head>
                 <title>Stats</title>
             </Head>
+            <Leaderboard scores={scores} />
             <StatChart scores={scores} />
         </>
     );
