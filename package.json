@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "ts-node": "ts-node --compiler-options '{\\\"module\\\":\\\"CommonJS\\\"}'",
+    "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
     "prisma:push": "prisma db push --preview-feature",
     "prisma:studio": "prisma studio"
   },

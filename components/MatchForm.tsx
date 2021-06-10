@@ -130,7 +130,7 @@ const MatchForm: React.FC<Props> = ({ match }) => {
             templateColumns={['repeat(3, 1fr)', 'repeat(3, 1fr)']}
             gap={2}
           >
-            <HStack>
+            <HStack justifyContent="flex-end">
               <Text display={['none', 'inline-block']}>
                 {match.homeTeam?.name}
               </Text>
