@@ -1,6 +1,5 @@
 import Flag from 'react-flags';
 import {
-  Flex,
   HStack,
   Box,
   Input,
@@ -68,21 +67,21 @@ const MatchForm: React.FC<Props> = ({ match }) => {
       const response = await axios.get(`/api/predictions/matches/${id}`);
       const bets = response.data;
       setUsersMatchBets(bets);
-    };
+    }
   };
 
   const getBgColorForGame = (result) => {
     switch (result) {
       case PredictionResult.PARTIAL:
-        return "yellow";
+        return 'yellow';
       case PredictionResult.CORRECT:
-        return "green";
+        return 'green';
       case PredictionResult.INCORRECT:
-        return "tomato";
+        return 'tomato';
       default:
-        return "white";
+        return 'white';
     }
-  }
+  };
 
   useEffect(() => {
     if (data?.find((d) => d.matchId === match.id)) {
@@ -229,8 +228,8 @@ const MatchForm: React.FC<Props> = ({ match }) => {
             </HStack>
           </Grid>
         </form>
-        {match.status === MatchStatus.IN_PLAY || match.status === MatchStatus.FINISHED
-          ?
+        {match.status === MatchStatus.IN_PLAY ||
+        match.status === MatchStatus.FINISHED ? (
           <Accordion allowMultiple>
             <AccordionItem>
               <h2>
@@ -243,22 +242,30 @@ const MatchForm: React.FC<Props> = ({ match }) => {
               </h2>
               <AccordionPanel pb={4}>
                 <Box textAlign="center">
-                  {usersMatchBets ?
+                  {usersMatchBets ? (
                     usersMatchBets.map((userBet) => (
-                      <Box key={userBet.id + 'box'} bg={() => getBgColorForGame(userBet.result)}>
+                      <Box
+                        key={userBet.id + 'box'}
+                        bg={getBgColorForGame(userBet.result)}
+                      >
                         <h3 key={userBet.id + 'h3'}>{userBet.user.name}</h3>
-                        <p key={userBet.id + 'p'}>{userBet.homeTeamGoals} - {userBet.awayTeamGoals}</p>
+                        <p key={userBet.id + 'p'}>
+                          {userBet.homeTeamGoals} - {userBet.awayTeamGoals}
+                        </p>
                       </Box>
                     ))
-                    : <Spinner />
-                  }
+                  ) : (
+                    <Spinner />
+                  )}
                 </Box>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
-          : <div></div>}
+        ) : (
+          <div></div>
+        )}
       </Box>
-    </Box >
+    </Box>
   );
 };
 

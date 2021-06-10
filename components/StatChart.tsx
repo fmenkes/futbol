@@ -16,9 +16,7 @@ const options = {
   },
 };
 
-const StatChart: React.FC<Props> = ({ scores, predictions }) => {
-  console.log(predictions)
-
+const StatChart: React.FC<Props> = ({ scores }) => {
   const [betData, setBetData] = useState(null);
 
   function getRandomColor(str) {
