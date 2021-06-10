@@ -8,15 +8,19 @@ import {
   Button,
   Grid,
   Center,
-  GridItem,
-  Tooltip,
   FormControl,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Spinner,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { MatchStatus, Prisma } from '@prisma/client';
+import { MatchStatus, PredictionResult, Prisma } from '@prisma/client';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { transformMatchStatus } from 'utils';
 import useSWR from 'swr';
 
@@ -48,7 +52,9 @@ const MatchForm: React.FC<Props> = ({ match }) => {
     },
   });
 
-  const { data } = useSWR('/api/predictions');
+  const [usersMatchBets, setUsersMatchBets] = useState(null);
+
+  const { data } = useSWR('/api/predictions/');
 
   const onSubmit = handleSubmit((data) => {
     axios.post('/api/predictions/update', {
@@ -56,6 +62,27 @@ const MatchForm: React.FC<Props> = ({ match }) => {
       matchId: match.id,
     });
   });
+
+  const loadOtherBets = async (id) => {
+    if (!usersMatchBets) {
+      const response = await axios.get(`/api/predictions/matches/${id}`);
+      const bets = response.data;
+      setUsersMatchBets(bets);
+    };
+  };
+
+  const getBgColorForGame = (result) => {
+    switch (result) {
+      case PredictionResult.PARTIAL:
+        return "yellow";
+      case PredictionResult.CORRECT:
+        return "green";
+      case PredictionResult.INCORRECT:
+        return "tomato";
+      default:
+        return "white";
+    }
+  }
 
   useEffect(() => {
     if (data?.find((d) => d.matchId === match.id)) {
@@ -190,8 +217,36 @@ const MatchForm: React.FC<Props> = ({ match }) => {
             </HStack>
           </Grid>
         </form>
+        {match.status === MatchStatus.IN_PLAY || match.status === MatchStatus.FINISHED
+          ?
+          <Accordion allowMultiple>
+            <AccordionItem>
+              <h2>
+                <AccordionButton onClick={() => loadOtherBets(match.id)}>
+                  <Box flex="1" textAlign="center">
+                    View player bets
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <Box textAlign="center">
+                  {usersMatchBets ?
+                    usersMatchBets.map((userBet) => (
+                      <Box key={userBet.id + 'box'} bg={() => getBgColorForGame(userBet.result)}>
+                        <h3 key={userBet.id + 'h3'}>{userBet.user.name}</h3>
+                        <p key={userBet.id + 'p'}>{userBet.homeTeamGoals} - {userBet.awayTeamGoals}</p>
+                      </Box>
+                    ))
+                    : <Spinner />
+                  }
+                </Box>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+          : <div></div>}
       </Box>
-    </Box>
+    </Box >
   );
 };
 

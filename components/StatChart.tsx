@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Container } from "@chakra-ui/react"
+import { Container } from "@chakra-ui/react";
+import { UserScores } from 'pages';
 
 type Props = {
   scores: UserScores[];
@@ -38,7 +39,7 @@ const options = {
     y: {
       suggestedMin: 0,
       suggestedMax: 15
-  }
+    }
   },
 };
 
