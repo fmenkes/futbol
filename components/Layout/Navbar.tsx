@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
         )}
         {session && (
           <>
-            <Box>{session.user.email}</Box>
+            <Box display={['none', 'block']}>{session.user.email}</Box>
             <Box>
               <NextLink href="/" passHref>
                 <Link>Home</Link>

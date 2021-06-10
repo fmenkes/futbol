@@ -16,7 +16,8 @@ const options = {
   },
 };
 
-const StatChart: React.FC<Props> = ({ scores }) => {
+const StatChart: React.FC<Props> = ({ scores, predictions }) => {
+  console.log(predictions)
 
   const [betData, setBetData] = useState(null);
 

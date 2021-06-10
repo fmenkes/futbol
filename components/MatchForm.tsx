@@ -117,20 +117,20 @@ const MatchForm: React.FC<Props> = ({ match }) => {
         </Text>
       </Box>
       <Center pb={2} display={['flex', 'none']}>
-        <Text>
+        <Text fontWeight="bold">
           {match.homeTeam ? match.homeTeam.name : '?'} VS{' '}
           {match.awayTeam ? match.awayTeam.name : '?'}
         </Text>
       </Center>
-      <Box bg="gray.100" rounded="md" w="full">
+      <Box bg="gray.100" rounded={['none', 'md']} w="full">
         <form onSubmit={onSubmit}>
           <Grid
             w="full"
-            p="4"
+            p={[2, 4]}
             templateColumns={['repeat(3, 1fr)', 'repeat(3, 1fr)']}
-            gap={4}
+            gap={2}
           >
-            <HStack justifyContent="flex-end">
+            <HStack>
               <Text display={['none', 'inline-block']}>
                 {match.homeTeam?.name}
               </Text>
@@ -143,8 +143,12 @@ const MatchForm: React.FC<Props> = ({ match }) => {
                   format="svg"
                 />
               </Box>
-              <FormControl w="16" isInvalid={!!errors.homeTeam}>
+              <FormControl
+                w={[disabled() ? 10 : 16, 16]}
+                isInvalid={!!errors.homeTeam}
+              >
                 <Input
+                  px={[disabled() ? 2 : 4, 4]}
                   type="number"
                   onInput={(e) => {
                     e.currentTarget.value = e.currentTarget.value.replace(
@@ -167,7 +171,9 @@ const MatchForm: React.FC<Props> = ({ match }) => {
               </FormControl>
             </HStack>
             <Center>
-              <Text>{match.homeTeamGoals}</Text>
+              <Text display={disabled() ? 'block' : 'none'}>
+                {match.homeTeamGoals}
+              </Text>
               <Button
                 disabled={disabled()}
                 mx={4}
@@ -177,11 +183,17 @@ const MatchForm: React.FC<Props> = ({ match }) => {
               >
                 {disabled() ? transformMatchStatus(match.status) : 'Save'}
               </Button>
-              <Text>{match.awayTeamGoals}</Text>
+              <Text display={disabled() ? 'block' : 'none'}>
+                {match.awayTeamGoals}
+              </Text>
             </Center>
             <HStack justifyContent="flex-start">
-              <FormControl w="16" isInvalid={!!errors.awayTeam}>
+              <FormControl
+                w={[disabled() ? 10 : 16, 16]}
+                isInvalid={!!errors.awayTeam}
+              >
                 <Input
+                  px={[disabled() ? 2 : 4, 4]}
                   type="number"
                   onInput={(e) => {
                     e.currentTarget.value = e.currentTarget.value.replace(

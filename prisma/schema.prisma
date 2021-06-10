@@ -89,6 +89,8 @@ enum UserRole {
 model AdminSettings {
   id            Int      @id @default(autoincrement())
   allowedEmails String[]
+  partialPoints Int? @map(name: "partial_points")
+  correctPoints Int? @map(name: "correct_points")
 }
 
 model Match {
