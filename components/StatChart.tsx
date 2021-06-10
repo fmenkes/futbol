@@ -7,33 +7,6 @@ type Props = {
   scores: UserScores[];
 };
 
-const data = {
-  labels: ['Matchday 1', 'Matchday 2', 'Matchday 3', 'Round of 16', 'Quarter Finals', 'Semi Finals', 'Final'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(75,192,192,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(75,192,192,1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40]
-    }
-  ]
-};
-
 const options = {
   scales: {
     y: {
@@ -48,27 +21,35 @@ const StatChart: React.FC<Props> = ({ scores }) => {
   const [betData, setBetData] = useState(null);
 
   function getRandomColor(str) {
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-    var colour = '#';
-    for (var i = 0; i < 3; i++) {
-      var value = (hash >> (i * 8)) & 0xFF;
+    let colour = '#';
+    for (let i = 0; i < 3; i++) {
+      let value = (hash >> (i * 8)) & 0xFF;
       colour += ('00' + value.toString(16)).substr(-2);
     }
     return hexToRgb(colour);
   }
 
   function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return (parseInt(result[1], 16) + ', ' + parseInt(result[2], 16) + ',' + parseInt(result[3], 16))
   }
 
+  function organizeUserScore(userScores) {      
+    {        
+      for (let i = 1; i < 7; i++) {
+        userScores[i] += userScores[i - 1];
+      }
+    }
+    return userScores;
+  }
 
   useEffect(() => {
     let bettingData = scores.map((user) => {
-      var userColor = getRandomColor(user.name);
+      let userColor = getRandomColor(user.name);
       return {
         label: user.name,
         fill: false,
@@ -88,13 +69,21 @@ const StatChart: React.FC<Props> = ({ scores }) => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: user.scores
+        data: organizeUserScore(user.scores)
       }
     })
 
     setBetData(
       {
-        labels: ['Matchday 1', 'Matchday 2', 'Matchday 3', 'Round of 16', 'Quarter Finals', 'Semi Finals', 'Final'],
+        labels: [
+          'Matchday 1',
+          'Matchday 2',
+          'Matchday 3',
+          'Round of 16',
+          'Quarter Finals',
+          'Semi Finals',
+          'Final'
+        ],
         datasets: bettingData
       }
     );
