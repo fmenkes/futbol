@@ -1,4 +1,5 @@
 import { MatchStatus } from '.prisma/client';
+import { ProjectedResult } from '@prisma/client';
 
 export const transformMatchStatus = (status: MatchStatus) => {
   switch (status) {
@@ -21,4 +22,19 @@ export const transformMatchStatus = (status: MatchStatus) => {
     default:
       return '?';
   }
+};
+
+export const getProjectedResult = (
+  homeTeamGoals: number,
+  awayTeamGoals: number,
+) => {
+  const oneXTwo = homeTeamGoals - awayTeamGoals;
+
+  return oneXTwo > 0
+    ? ProjectedResult.HOME_TEAM
+    : oneXTwo === 0
+    ? ProjectedResult.DRAW
+    : oneXTwo < 0
+    ? ProjectedResult.AWAY_TEAM
+    : ProjectedResult.DRAW;
 };

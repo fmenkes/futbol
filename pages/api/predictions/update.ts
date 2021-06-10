@@ -1,6 +1,7 @@
 import { NextApiHandler } from 'next';
 import { getSession } from 'next-auth/client';
 import prisma from '@lib/prisma';
+import { getProjectedResult } from 'utils';
 
 const update: NextApiHandler = async (req, res) => {
   const session = await getSession({ req });
@@ -24,6 +25,8 @@ const update: NextApiHandler = async (req, res) => {
     res.status(500).end();
   }
 
+  const projectedResult = getProjectedResult(homeTeamGoals, awayTeamGoals);
+
   const prediction = await prisma.prediction.upsert({
     where: {
       UserMatchKey: {
@@ -34,12 +37,14 @@ const update: NextApiHandler = async (req, res) => {
     update: {
       homeTeamGoals,
       awayTeamGoals,
+      projectedResult,
     },
     create: {
       userId: user.id,
       matchId: match,
       homeTeamGoals,
       awayTeamGoals,
+      projectedResult,
     },
   });
 
