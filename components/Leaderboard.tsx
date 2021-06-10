@@ -27,9 +27,15 @@ const Leaderboard: React.FC<Props> = ({ scores }) => {
     <Container maxW="container.lg">
       <Table>
         <Thead>
-          <Th>Rank</Th>
-          <Th>Player</Th>
-          <Th isNumeric>Score</Th>
+          <Tr>
+            <Th>Rank</Th>
+          </Tr>
+          <Tr>
+            <Th>Player</Th>
+          </Tr>
+          <Tr>
+            <Th isNumeric>Score</Th>
+          </Tr>
         </Thead>
         <Tbody>
           {sortedScores.map((user, i) => {
@@ -37,10 +43,10 @@ const Leaderboard: React.FC<Props> = ({ scores }) => {
             // const trend = rank < player.lastWeek ? 'increase' : 'decrease';
 
             return (
-              <Tr>
-                <Td>{rank}</Td>
-                <Td>{user.name}</Td>
-                <Td isNumeric>{user.totalScore}</Td>
+              <Tr key={user.name + 'th'}>
+                <Td key={user.name + 'rank'}>{rank}</Td>
+                <Td key={user.name + 'username'}>{user.name}</Td>
+                <Td key={user.name + 'score'} isNumeric>{user.totalScore}</Td>
               </Tr>
             );
           })}

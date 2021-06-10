@@ -101,7 +101,7 @@ const StatChart: React.FC<Props> = ({ scores }) => {
 
   return (
     <>
-      <Container maxW="container.lg">
+      <Container maxW="container.md">
         <Line
           type={'line'}
           data={betData}
