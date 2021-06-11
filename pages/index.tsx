@@ -4,6 +4,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { Prisma } from '@prisma/client';
 import prisma from '@lib/prisma';
+import { Center, Heading } from '@chakra-ui/react';
 
 const userScores = Prisma.validator<Prisma.UserArgs>()({
   select: { scores: true, name: true },
@@ -16,13 +17,15 @@ type Props = {
 };
 
 const Home: NextPage<Props> = ({ scores }) => {
-  console.log(scores);
   return (
     <>
       <Head>
-        <title>Fútbol</title>
+        <title>Fútbol Ω</title>
       </Head>
-      <Leaderboard scores={scores} />
+      <Center mt={24}>
+        <Heading fontSize="6xl">FÚTBOL Ω</Heading>
+      </Center>
+      {/* <Leaderboard scores={scores} /> */}
     </>
   );
 };

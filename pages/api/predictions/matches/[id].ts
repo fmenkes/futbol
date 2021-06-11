@@ -17,7 +17,7 @@ const get: NextApiHandler = async (req, res) => {
       match.status === MatchStatus.FINISHED
     )
   ) {
-    res.status(403).end();
+    return res.status(403).end();
   }
 
   const scores = await prisma.prediction.findMany({
