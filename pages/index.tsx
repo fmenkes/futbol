@@ -37,8 +37,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   });
 
   const scoresWithNames = scores.map((user) => ({
-    ...user,
     name: user.name || user.email.split('@')[0],
+    scores: user.scores,
   }));
 
   return {
