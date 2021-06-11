@@ -22,7 +22,19 @@ const update: NextApiHandler = async (req, res) => {
     awayTeamGoals = parseInt(awayTeam, 10);
     match = parseInt(matchId, 10);
   } catch {
-    res.status(500).end();
+    return res.status(500).end();
+  }
+
+  const { status } = await prisma.match.findUnique({
+    where: { id: match },
+  });
+
+  if (
+    status !== 'SCHEDULED' &&
+    status !== 'POSTPONED' &&
+    status !== 'CANCELED'
+  ) {
+    return res.status(403).end();
   }
 
   const projectedResult = getProjectedResult(homeTeamGoals, awayTeamGoals);

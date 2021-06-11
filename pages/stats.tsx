@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { PredictionResult, Prisma, Stage } from '@prisma/client';
 import prisma from '@lib/prisma';
 import Leaderboard from '@components/Leaderboard';
+import { withAuth } from 'hoc/withAuth';
 
 const StatChart = dynamic(() => import('../components/StatChart'));
 
@@ -50,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     },
   });
-  
+
   const matchdays = [
     'Matchday 1',
     'Matchday 2',
@@ -108,7 +109,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           break;
         case 'Round of 16':
           const roundOfSixteenPredictions = user.predictions.filter(
-            (p) => (p.match.stage === Stage.LAST_16),
+            (p) => p.match.stage === Stage.LAST_16,
           );
           roundOfSixteenPredictions.forEach((p) => {
             score +=
@@ -121,7 +122,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           break;
         case 'Quarter Finals':
           const quarterFinalsPredictions = user.predictions.filter(
-            (p) => (p.match.stage === Stage.QUARTER_FINAL),
+            (p) => p.match.stage === Stage.QUARTER_FINAL,
           );
           quarterFinalsPredictions.forEach((p) => {
             score +=
@@ -134,7 +135,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           break;
         case 'Semi Finals':
           const semiFinalsPredictions = user.predictions.filter(
-            (p) => (p.match.stage === Stage.SEMI_FINAL),
+            (p) => p.match.stage === Stage.SEMI_FINAL,
           );
           semiFinalsPredictions.forEach((p) => {
             score +=
@@ -147,7 +148,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           break;
         case 'Final':
           const finalPredictions = user.predictions.filter(
-            (p) => (p.match.stage === Stage.FINAL),
+            (p) => p.match.stage === Stage.FINAL,
           );
           finalPredictions.forEach((p) => {
             score +=
@@ -170,4 +171,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default Stats;
+export default withAuth(5 * 60)(Stats);

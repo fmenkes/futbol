@@ -9,7 +9,7 @@ const get: NextApiHandler = async (req, res) => {
   });
 
   if (!user) {
-    res.status(401).end();
+    return res.status(401).end();
   }
 
   const predictions = await prisma.prediction.findMany({

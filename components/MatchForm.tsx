@@ -81,11 +81,11 @@ const MatchForm: React.FC<Props> = ({ match }) => {
   const getBgColorForGame = (result) => {
     switch (result) {
       case PredictionResult.PARTIAL:
-        return 'yellow';
+        return 'yellow.300';
       case PredictionResult.CORRECT:
-        return 'green';
+        return 'green.300';
       case PredictionResult.INCORRECT:
-        return 'tomato';
+        return 'red.300';
       default:
         return 'white';
     }
@@ -245,7 +245,7 @@ const MatchForm: React.FC<Props> = ({ match }) => {
         || match.status === MatchStatus.PAUSED 
         || match.status === MatchStatus.FINISHED ? (
           <Accordion allowMultiple>
-            <AccordionItem>
+            <AccordionItem roundedBottom="md">
               <h2>
                 <AccordionButton onClick={() => loadOtherBets(match.id)}>
                   <Box flex="1" textAlign="center">
@@ -262,10 +262,10 @@ const MatchForm: React.FC<Props> = ({ match }) => {
                         key={userBet.id + 'box'}
                         bg={getBgColorForGame(userBet.result)}
                       >
-                        <h3 key={userBet.id + 'h3'}>{userBet.user.name}</h3>
-                        <p key={userBet.id + 'p'}>
+                        <Text fontWeight="bold" fontSize="lg">{userBet.user.name}</Text>
+                        <Text>
                           {userBet.homeTeamGoals} - {userBet.awayTeamGoals}
-                        </p>
+                        </Text>
                       </Box>
                     ))
                   ) : (
