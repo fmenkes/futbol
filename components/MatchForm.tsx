@@ -241,8 +241,9 @@ const MatchForm: React.FC<Props> = ({ match }) => {
             </HStack>
           </Grid>
         </form>
-        {match.status === MatchStatus.IN_PLAY ||
-        match.status === MatchStatus.FINISHED ? (
+        {match.status === MatchStatus.IN_PLAY 
+        || match.status === MatchStatus.PAUSED 
+        || match.status === MatchStatus.FINISHED ? (
           <Accordion allowMultiple>
             <AccordionItem>
               <h2>
