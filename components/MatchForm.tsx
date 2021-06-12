@@ -16,7 +16,12 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { MatchStatus, PredictionResult, Prisma } from '@prisma/client';
+import {
+  MatchStatus,
+  Prediction,
+  PredictionResult,
+  Prisma,
+} from '@prisma/client';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -43,7 +48,7 @@ const MatchForm: React.FC<Props> = ({ match }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       homeTeam: '',
@@ -52,29 +57,27 @@ const MatchForm: React.FC<Props> = ({ match }) => {
   });
 
   const [usersMatchBets, setUsersMatchBets] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [saveError, setSaveError] = useState(false);
 
   const { data } = useSWR('/api/predictions/');
 
   const onSubmit = handleSubmit(async (data) => {
-    setLoading(true);
-    let response = await axios.post('/api/predictions/update', {
-      ...data,
-      matchId: match.id,
-    });
-    setLoading(false);
-    if (response.status >=  200 && response.status < 300) {
+    try {
+      await axios.post('/api/predictions/update', {
+        ...data,
+        matchId: match.id,
+      });
       setSuccess(true);
-      setSaveError(false);
-    }
-    else {
+      setTimeout(() => {
+        setSuccess(false);
+      }, 2000);
+    } catch (e) {
       setSaveError(true);
+      setTimeout(() => {
+        setSaveError(false);
+      }, 2000);
     }
-    setTimeout(() => {
-      setSuccess(false);
-    }, 2000);
   });
 
   const loadOtherBets = async (id) => {
@@ -99,10 +102,14 @@ const MatchForm: React.FC<Props> = ({ match }) => {
   };
 
   useEffect(() => {
-    if (data?.find((d) => d.matchId === match.id)) {
+    if (data?.find((d: Prediction) => d.matchId === match.id)) {
       reset({
-        homeTeam: `${data.find((d) => d.matchId === match.id)?.homeTeamGoals}`,
-        awayTeam: `${data.find((d) => d.matchId === match.id)?.awayTeamGoals}`,
+        homeTeam: `${
+          data.find((d: Prediction) => d.matchId === match.id)?.homeTeamGoals
+        }`,
+        awayTeam: `${
+          data.find((d: Prediction) => d.matchId === match.id)?.awayTeamGoals
+        }`,
       });
     }
   }, [data]);
@@ -189,20 +196,20 @@ const MatchForm: React.FC<Props> = ({ match }) => {
                 {match.homeTeamGoals}
               </Text>
               <Button
-                isLoading={loading}
-                disabled={disabled() || success}
+                isLoading={isSubmitting}
+                disabled={disabled() || success || saveError}
                 mx={4}
-                colorScheme={saveError ? "red" : "teal"}
+                colorScheme={saveError ? 'red' : 'teal'}
                 type="submit"
                 textTransform="initial"
               >
                 {disabled()
                   ? transformMatchStatus(match.status)
                   : success
-                    ? 'Saved 👍'
-                    : saveError
-                      ? 'Error, try again'
-                      : 'Save'}
+                  ? 'Saved 👍'
+                  : saveError
+                  ? 'Error'
+                  : 'Save'}
               </Button>
               <Text display={disabled() ? 'block' : 'none'}>
                 {match.awayTeamGoals}
@@ -250,9 +257,9 @@ const MatchForm: React.FC<Props> = ({ match }) => {
             </HStack>
           </Grid>
         </form>
-        {match.status === MatchStatus.IN_PLAY
-          || match.status === MatchStatus.PAUSED
-          || match.status === MatchStatus.FINISHED ? (
+        {match.status === MatchStatus.IN_PLAY ||
+        match.status === MatchStatus.PAUSED ||
+        match.status === MatchStatus.FINISHED ? (
           <Accordion allowMultiple>
             <AccordionItem roundedBottom="md">
               <h2>
@@ -271,7 +278,9 @@ const MatchForm: React.FC<Props> = ({ match }) => {
                         key={userBet.id + 'box'}
                         bg={getBgColorForGame(userBet.result)}
                       >
-                        <Text fontWeight="bold" fontSize="lg">{userBet.user.name}</Text>
+                        <Text fontWeight="bold" fontSize="lg">
+                          {userBet.user.name}
+                        </Text>
                         <Text>
                           {userBet.homeTeamGoals} - {userBet.awayTeamGoals}
                         </Text>
