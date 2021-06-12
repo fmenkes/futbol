@@ -54,17 +54,24 @@ const MatchForm: React.FC<Props> = ({ match }) => {
   const [usersMatchBets, setUsersMatchBets] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   const { data } = useSWR('/api/predictions/');
 
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true);
-    await axios.post('/api/predictions/update', {
+    let response = await axios.post('/api/predictions/update', {
       ...data,
       matchId: match.id,
     });
     setLoading(false);
-    setSuccess(true);
+    if (response.status >=  200 && response.status < 300) {
+      setSuccess(true);
+      setSaveError(false);
+    }
+    else {
+      setSaveError(true);
+    }
     setTimeout(() => {
       setSuccess(false);
     }, 2000);
@@ -185,15 +192,17 @@ const MatchForm: React.FC<Props> = ({ match }) => {
                 isLoading={loading}
                 disabled={disabled() || success}
                 mx={4}
-                colorScheme="teal"
+                colorScheme={saveError ? "red" : "teal"}
                 type="submit"
                 textTransform="initial"
               >
                 {disabled()
                   ? transformMatchStatus(match.status)
                   : success
-                  ? 'Saved 👍'
-                  : 'Save'}
+                    ? 'Saved 👍'
+                    : saveError
+                      ? 'Error, try again'
+                      : 'Save'}
               </Button>
               <Text display={disabled() ? 'block' : 'none'}>
                 {match.awayTeamGoals}
@@ -241,9 +250,9 @@ const MatchForm: React.FC<Props> = ({ match }) => {
             </HStack>
           </Grid>
         </form>
-        {match.status === MatchStatus.IN_PLAY 
-        || match.status === MatchStatus.PAUSED 
-        || match.status === MatchStatus.FINISHED ? (
+        {match.status === MatchStatus.IN_PLAY
+          || match.status === MatchStatus.PAUSED
+          || match.status === MatchStatus.FINISHED ? (
           <Accordion allowMultiple>
             <AccordionItem roundedBottom="md">
               <h2>
