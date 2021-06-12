@@ -14,7 +14,8 @@ const get: NextApiHandler = async (req, res) => {
   if (
     !(
       match.status === MatchStatus.IN_PLAY ||
-      match.status === MatchStatus.FINISHED
+      match.status === MatchStatus.FINISHED ||
+      match.status === MatchStatus.PAUSED
     )
   ) {
     return res.status(403).end();
