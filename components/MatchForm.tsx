@@ -14,12 +14,14 @@ import {
   AccordionPanel,
   AccordionIcon,
   Spinner,
+  Heading,
+  Flex,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { MatchStatus, PredictionResult, Prisma } from '@prisma/client';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { transformMatchStatus } from 'utils';
 import useSWR from 'swr';
 
@@ -31,6 +33,7 @@ type MatchWithTeams = Prisma.MatchGetPayload<typeof matchWithTeams>;
 
 type Props = {
   match: MatchWithTeams;
+  showFinishedGames: boolean;
 };
 
 type FormData = {
@@ -38,7 +41,7 @@ type FormData = {
   awayTeam: string;
 };
 
-const MatchForm: React.FC<Props> = ({ match }) => {
+const MatchForm: React.FC<Props> = ({ match, showFinishedGames }) => {
   const {
     register,
     handleSubmit,
@@ -114,6 +117,10 @@ const MatchForm: React.FC<Props> = ({ match }) => {
         return false;
     }
   };
+
+  if (!showFinishedGames && match.status === MatchStatus.FINISHED) {
+    return null;
+  }
 
   return (
     <Box w="full">
@@ -241,42 +248,43 @@ const MatchForm: React.FC<Props> = ({ match }) => {
             </HStack>
           </Grid>
         </form>
-        {match.status === MatchStatus.IN_PLAY 
-        || match.status === MatchStatus.PAUSED 
-        || match.status === MatchStatus.FINISHED ? (
+        {(match.status === MatchStatus.IN_PLAY ||
+          match.status === MatchStatus.PAUSED ||
+          match.status === MatchStatus.FINISHED) && (
           <Accordion allowMultiple>
             <AccordionItem roundedBottom="md">
-              <h2>
+              <Box>
                 <AccordionButton onClick={() => loadOtherBets(match.id)}>
-                  <Box flex="1" textAlign="center">
-                    View player bets
+                  <Box flex="1">
+                    <Text ml="20px">View player bets</Text>
                   </Box>
                   <AccordionIcon />
                 </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <Box textAlign="center">
+              </Box>
+              <AccordionPanel py={4}>
+                <Flex flexDir="column" alignItems="center" textAlign="center">
                   {usersMatchBets ? (
                     usersMatchBets.map((userBet) => (
                       <Box
+                        w="full"
                         key={userBet.id + 'box'}
                         bg={getBgColorForGame(userBet.result)}
                       >
-                        <Text fontWeight="bold" fontSize="lg">{userBet.user.name}</Text>
+                        <Text fontWeight="bold" fontSize="lg">
+                          {userBet.user.name}
+                        </Text>
                         <Text>
                           {userBet.homeTeamGoals} - {userBet.awayTeamGoals}
                         </Text>
                       </Box>
                     ))
                   ) : (
-                    <Spinner />
+                    <Spinner color="teal" />
                   )}
-                </Box>
+                </Flex>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
-        ) : (
-          <div></div>
         )}
       </Box>
     </Box>
