@@ -24,7 +24,7 @@ type Props = {
 
 const Matches: NextPage<Props> = ({ matches }) => {
   // TODO: Can be gotten from user settings if that is ever implemented
-  const [showFinishedGames, setShowFinishedGames] = useState(true);
+  const [showFinishedGames, setShowFinishedGames] = useState(false);
   return (
     <>
       <Head>
