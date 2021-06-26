@@ -19,7 +19,7 @@ const get: NextApiHandler = async (req, res) => {
   const { data, status } = result;
 
   if (status === 400) {
-    res.status(401).end();
+    return res.status(401).end();
   }
 
   const { match } = data;

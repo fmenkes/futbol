@@ -14,10 +14,11 @@ const get: NextApiHandler = async (req, res) => {
   if (
     !(
       match.status === MatchStatus.IN_PLAY ||
-      match.status === MatchStatus.FINISHED
+      match.status === MatchStatus.FINISHED ||
+      match.status === MatchStatus.PAUSED
     )
   ) {
-    res.status(403).end();
+    return res.status(403).end();
   }
 
   const scores = await prisma.prediction.findMany({
