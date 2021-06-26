@@ -36,8 +36,8 @@ const get: NextApiHandler = async (req, res) => {
     },
     data: {
       status: match.status,
-      homeTeamGoals: match.score.fullTime.homeTeam || 0,
-      awayTeamGoals: match.score.fullTime.awayTeam || 0,
+      homeTeamGoals: match.score.fullTime.homeTeam || 0 - match.score.extraTime.homeTeam || 0,
+      awayTeamGoals: match.score.fullTime.awayTeam || 0 - match.score.extraTime.awayTeam || 0,
     },
   });
 
