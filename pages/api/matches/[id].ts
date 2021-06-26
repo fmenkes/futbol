@@ -24,11 +24,8 @@ const get: NextApiHandler = async (req, res) => {
 
   const { match } = data;
 
-  console.log(
-    match.status,
-    match.score.fullTime.homeTeam,
-    match.score.fullTime.awayTeam,
-  );
+  const adjustedHomeTeamGoals = (match.score.fullTime.homeTeam || 0) - (match.score.extraTime.homeTeam || 0);
+  const adjustedAwayTeamGoals = (match.score.fullTime.awayTeam || 0) - (match.score.extraTime.awayTeam || 0);
 
   await prisma.match.update({
     where: {
@@ -36,15 +33,15 @@ const get: NextApiHandler = async (req, res) => {
     },
     data: {
       status: match.status,
-      homeTeamGoals: match.score.fullTime.homeTeam || 0 - match.score.extraTime.homeTeam || 0,
-      awayTeamGoals: match.score.fullTime.awayTeam || 0 - match.score.extraTime.awayTeam || 0,
+      homeTeamGoals: adjustedHomeTeamGoals,
+      awayTeamGoals: adjustedAwayTeamGoals,
     },
   });
 
   if (match.status === MatchStatus.FINISHED) {
     const projectedResult = getProjectedResult(
-      match.score.fullTime.homeTeam,
-      match.score.fullTime.awayTeam,
+      adjustedHomeTeamGoals,
+      adjustedAwayTeamGoals,
     );
 
     await prisma.prediction.updateMany({
@@ -54,8 +51,8 @@ const get: NextApiHandler = async (req, res) => {
             matchId: match.id,
           },
           {
-            homeTeamGoals: match.score.fullTime.homeTeam,
-            awayTeamGoals: match.score.fullTime.awayTeam,
+            homeTeamGoals: adjustedHomeTeamGoals,
+            awayTeamGoals: adjustedAwayTeamGoals,
           },
         ],
       },
@@ -76,8 +73,8 @@ const get: NextApiHandler = async (req, res) => {
           {
             NOT: [
               {
-                homeTeamGoals: match.score.fullTime.homeTeam,
-                awayTeamGoals: match.score.fullTime.awayTeam,
+                homeTeamGoals: adjustedHomeTeamGoals,
+                awayTeamGoals: adjustedAwayTeamGoals,
               },
             ],
           },
