@@ -24,8 +24,8 @@ const get: NextApiHandler = async (req, res) => {
 
   const { match } = data;
 
-  const adjustedHomeTeamGoals = (match.score.fullTime.homeTeam || 0) - (match.score.extraTime.homeTeam || 0);
-  const adjustedAwayTeamGoals = (match.score.fullTime.awayTeam || 0) - (match.score.extraTime.awayTeam || 0);
+  const adjustedHomeTeamGoals = (match.score.fullTime.homeTeam || 0) - (match.score.extraTime.homeTeam || 0) - (match.score.penalties.homeTeam || 0);
+  const adjustedAwayTeamGoals = (match.score.fullTime.awayTeam || 0) - (match.score.extraTime.awayTeam || 0) - (match.score.penalties.awayTeam || 0);
 
   await prisma.match.update({
     where: {
